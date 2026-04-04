@@ -1,0 +1,5 @@
+npx biome check --apply --staged
+if [ $? -ne 0 ]; then
+	echo 'Biome check failed. Fix errors before committing.'
+	exit 1
+fi

@@ -1,0 +1,29 @@
+{
+  "name": "corto-qa-assessment",
+  "version": "1.0.0",
+  "description": "Playwright + TypeScript test automation framework for CORTO assessment",
+  "scripts": {
+    "test:smoke": "npx playwright test --project=smoke",
+    "test:regression": "npx playwright test --project=regression",
+    "test:extended": "npx playwright test --project=extended",
+    "test:all": "npx playwright test",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "check": "biome check --apply ."
+  },
+  "dependencies": {
+    "@playwright/test": "^1.48.0",
+    "typescript": "^5.6.0",
+    "uuid": "^11.0.0",
+    "ajv": "^8.17.0",
+    "@axe-core/playwright": "^4.10.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
