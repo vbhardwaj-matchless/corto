@@ -1,36 +1,36 @@
 name: Regression Tests
 on:
-	workflow_dispatch:
-		inputs:
-			environment:
-				description: 'Target environment'
-				required: true
-				default: 'staging'
-				type: choice
-				options:
-					- staging
-					- production
-	deployment_status:
-		types: [success]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+  deployment_status:
+    types: [success]
 jobs:
-	regression:
-		runs-on: ubuntu-latest
-		steps:
-			- uses: actions/checkout@v4
-			- name: Setup Node.js
-				uses: actions/setup-node@v4
-				with:
-					node-version: 20
-			- run: npm ci
-			- run: npx playwright install --with-deps chromium
-			- run: npx playwright test --project=regression
-			- name: Upload Playwright HTML Report
-				if: failure()
-				uses: actions/upload-artifact@v4
-				with:
-					name: regression-report
-					path: playwright-report/
-			- name: Notify on Failure
-				if: failure()
-				run: |
-					curl -X POST -H "Content-Type: application/json" -d '{"text": "Regression tests failed."}' ${{ secrets.ALERT_WEBHOOK_URL }}
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=regression
+      - name: Upload Playwright HTML Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-report
+          path: playwright-report/
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{"text": "Regression tests failed."}' ${{ secrets.ALERT_WEBHOOK_URL }}

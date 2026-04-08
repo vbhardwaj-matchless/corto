@@ -12,14 +12,18 @@
     "check": "biome check --apply ."
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.10.0",
     "@playwright/test": "^1.48.0",
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.1",
     "typescript": "^5.6.0",
     "uuid": "^11.0.0",
-    "ajv": "^8.17.0",
-    "@axe-core/playwright": "^4.10.0"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
+    "@types/node": "^25.5.2",
+    "dotenv": "^17.4.1",
     "husky": "^9.1.0",
     "lint-staged": "^15.2.0"
   },

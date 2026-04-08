@@ -9,6 +9,9 @@ This repository contains a Playwright + TypeScript automation framework for the 
 3. Copy `.env.example` to `.env` and fill in values
 4. Run `npm run test:smoke`
 
+## Design Decisions
+This repo is a standalone QA mono-repo. For the reasoning behind framework choices, repo structure, tool selection, and test layering, see the [Quality Strategy](./docs/Quality-Strategy.md) and the [Architectural Diagram](./docs/Architecture.png).
+
 ## Test Layers
 | Layer      | Tag         | Trigger           | Blocking |
 |-----------|-------------|-------------------|----------|
@@ -17,31 +20,26 @@ This repository contains a Playwright + TypeScript automation framework for the 
 | Extended  | @extended   | Pre-release/manual| No       |
 
 ## Folder Structure
-- .github/ — CI workflows, agent constraints
-- specs/ — Markdown test plans (Planner Agent output)
+- .github/ — CI workflows
+- specs/ — Markdown test plans 
 - tests/ — All test files (UI and API)
 - pages/ — Page Object Model classes
 - services/ — API Service Object classes
 - fixtures/ — Playwright fixtures for setup/teardown
 - data/ — Test data, factories, schemas
+- docs/ — Quality Strategy, Contributing, Architecture
 - utils/ — Utility helpers (schema validation, timers, axe)
 - config/ — Environment config
+- specs/ — Test Plans
 - .husky/ — Pre-commit hooks
 
-## Design Decisions
-This repo is a standalone QA mono-repo. For the reasoning behind framework choices, repo structure, tool selection, and test layering, see the [Test Strategy](./STRATEGY.md) and the [Architectural Diagram](./docs/architecture.png).
+## AI Assistance (Task 1 & Task 2(PartA))
+GitHub Copilot Agent mode (Claude Sonnet) was used for comments, documentation and deep research of apps.Human(Varun for this assesment) in the loop review and approves/rejects every output of AI. 
 
-## Playwright Agents Workflow
-1. Prompts 1–3 via GitHub Copilot Agent mode build the framework scaffold (no tests yet).
-2. Planner Agent explores the app and produces Markdown test plans in specs/. Review and tag before proceeding.
-3. Generator Agent reads the approved plans and generates test files using existing Page Objects, Service Objects, and fixtures.
-4. Human review of all generated output before running.
-5. Run the suite. Identify locator failures.
-6. Healer Agent patches broken locators. All patches reviewed via PR before merge.
-> Note: Playwright Agents are activated by running `npx playwright init-agents --loop=vscode` after the scaffold is in place. This generates agent definition files into `.github/`. No npm install required; the VS Code Playwright extension (v1.105+) is required.
-
-## AI Assistance
-GitHub Copilot Agent mode (Claude Sonnet) was used for framework scaffolding via structured prompts, Playwright Agents were used for test plan generation and locator healing, all agent output was manually reviewed and refactored to meet the framework standards defined in STRATEGY.md, and no test was merged without human validation.
+## Task 2 (PartB)
+ Playwright agents were installed to do this task including planning, generation and healing. 
+- specs/ — Test Plans
+- tests/api/taskB — spec.ts
 
 ## Contributing
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [Contributing.md](./docs/Contributing.md).

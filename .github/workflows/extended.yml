@@ -1,21 +1,21 @@
 name: Extended Tests
 on:
-	workflow_dispatch:
+  workflow_dispatch:
 jobs:
-	extended:
-		runs-on: ubuntu-latest
-		steps:
-			- uses: actions/checkout@v4
-			- name: Setup Node.js
-				uses: actions/setup-node@v4
-				with:
-					node-version: 20
-			- run: npm ci
-			- run: npx playwright install --with-deps chromium
-			- run: npx playwright test --project=extended
-			- name: Upload Playwright HTML Report
-				if: failure()
-				uses: actions/upload-artifact@v4
-				with:
-					name: extended-report
-					path: playwright-report/
+  extended:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=extended
+      - name: Upload Playwright HTML Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extended-report
+          path: playwright-report/
