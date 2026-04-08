@@ -1,6 +1,6 @@
-# CORTO Lead QE: Test Strategy Brief
+# Test Strategy Brief
 
-**Author:** Varun | **Date:** April 2026
+**Author:** Varun
 
 ---
 
@@ -28,7 +28,7 @@ Every `@smoke` test is also portable as a **post-deploy synthetic check** in sta
 
 **Tools considered and ruled out:**
 
-**Postman/Newman** is a legitimate tool for exploratory testing and backend teams sharing collections for manual smoke tests. It is not an automation framework. There is no type safety, no reusable Service Objects, and no IDE support. Test logic lives in a text box. When the API changes, every request is updated manually.
+**Postman/Newman/Bruno/Insomnia** is a legitimate tool for exploratory testing and backend teams sharing collections for manual smoke tests. It is not an automation framework. There is no type safety, no reusable Service Objects, and no IDE support. Test logic lives in a text box. When the API changes, every request is updated manually.
 
 **Cypress** runs inside the browser's JavaScript context. It cannot handle new tabs, file downloads, or native dialogs. Parallelism requires their paid cloud. TypeScript support was bolted on, not built in. None of this fits a scaling team on Playwright.
 
@@ -38,21 +38,34 @@ Every `@smoke` test is also portable as a **post-deploy synthetic check** in sta
 
 **Axios with TypeScript** is the right choice if the API suite grows to need complex interceptors or contract testing. For this assessment, Playwright's `request` context is sufficient. Axios is the natural next step.
 
+**Network Strategy:** This suite uses **Live Integration Testing** (hitting real endpoints) to validate the full stack. **Network Mocking** via `page.route()` is reserved for `@extended` scenarios (e.g., simulating 500 errors or slow network conditions) to keep the `@smoke` layer as a true production-readiness signal.
+
+**Contract Validation:** API structural integrity is enforced via **JSON Schema Matching** on every response. This is a "consumer-side" contract check. For a production environment with multiple teams, a dedicated contract testing tool (e.g., **Pact**) would be the next step to prevent breaking changes before they reach the integration environment.
+
 **Architecture:** Page Object Model for UI, Service Object pattern for API. Tests read like business actions (`bookingService.create(payload)`). Changes are made in one place.
 
 **Repo structure:** Both UI and API suites live in a single QA mono-repo for this assessment. In a production context where frontend and backend are in separate repos, the API tests move to the backend repo and the UI tests to the frontend repo. The tagging strategy (`@smoke`, `@regression`, `@extended`) and CI trigger patterns remain consistent across both repos as a team-wide governance standard. The Service Object pattern used here is portable — `BookingService` can be extracted into a backend repo's test suite without structural changes.
 
 ---
 
-## 3. Selector Strategy
+## 3. Architectural Patterns & Principles
+**Page Object Model (POM):** Encapsulates UI locators and user actions into classes to separate test logic from implementation details.
+**Service Object Model (SOM):** Encapsulates API endpoints and request logic into classes for reusable, thread-safe interaction.
+**Dependency Injection (Fixtures):** Leverages Playwright's native test.extend to inject authenticated page and request contexts, ensuring clean test isolation.
+**Data Factory Pattern:** Centralizes the creation of UUID-prefixed payloads to prevent data collisions during parallel execution.
+**Singleton Configuration:** Single source of truth for environment variables and secrets via config/environments.ts, ensuring zero hardcoding.
+
+---
+
+## 4. Selector Strategy
 
 Priority order:
 
 1. **User-facing locators** (`getByRole`, `getByLabel`) — stable and a passive accessibility check.
 2. **`data-testid`** — for dynamic components where role-based locators are too ambiguous. This is a Dev/QE shared contract agreed upfront, not retrofitted.
-3. **CSS/XPath** — off the table unless working with third-party components we don't own.
+3. **ID/CSS/XPath** — off the table unless working with third-party components we don't own.
 
-DemoQA has no `data-testid` attributes. This suite uses user-facing locators only.
+**DemoQA DOM reality (validated live):** DemoQA has no `data-testid` attributes and no `aria-label` attributes. All `<label>` elements have a `null` `for` attribute — they are not bound to any input, so `getByLabel` will not match any form field on this site. For DemoQA inputs, `#id` selectors (`#userName`, `#password`, `#searchBox`) are the correct and reliable choice — they are stable element contracts, not aesthetic CSS. For interactive elements, `getByRole('button', { name: '...' })` and `getByPlaceholder` are applicable where the DOM provides them.
 
 **Browser coverage:** Chromium only. This is a deliberate scope decision for the assessment. CORTO's Electron products are Chromium-based, which makes this defensible beyond the assessment too. Cross-browser and compatibility testing across Firefox and WebKit is a production concern, not an assessment deliverable.
 
@@ -60,7 +73,7 @@ DemoQA has no `data-testid` attributes. This suite uses user-facing locators onl
 
 ---
 
-## 4. Data Isolation, Independence, and Non-Functional Baselines
+## 5. Data Isolation, Independence, and Non-Functional Baselines
 
 **Test independence:** Every test must be runnable in any order and in isolation. No test relies on state left by another.
 
@@ -72,13 +85,15 @@ DemoQA has no `data-testid` attributes. This suite uses user-facing locators onl
 
 **Security:** 401/403 responses are asserted for all authenticated endpoints. Full DAST scanning (OWASP ZAP) is the next step, not in scope for this assessment.
 
-**Accessibility:** `@axe-core/playwright` scans Login, Book Store, and Profile pages for WCAG compliance in CI.
+**Accessibility:** `@axe-core/playwright` scans Login, Book Store, and Profile pages for WCAG compliance. Scans are triggered via `runAxeScan(page)` from `utils/axe-scanner.ts`, called in the `afterEach` hook of each UI test so every visited page is scanned automatically without bloating test step logic.
 
-**Performance:** API response times are asserted under 500ms as a regression guard. This is not a load test. JMeter is the right tool for that and is out of scope here.
+**Performance:** API response times and UI "Time to Actionable" are asserted under 500ms as a regression guard. "Time to Actionable" is measured from navigation start to the visibility of the primary interactive element: `const start = Date.now(); await page.goto(url); await page.waitForSelector(keySelector); assertResponseTime(Date.now() - start, 500)` — using `assertResponseTime` from `utils/response-timer.ts`. This is not a load test. JMeter is the right tool for that and is out of scope here.
+
+**Lighthouse Audits:** For this assessment, performance is measured via functional timings. In a production context, **Lighthouse** could be used for **Nightly Synthetic Audits** (Page Speed, SEO, and Best Practices). It is kept *outside* the functional test suite to maintain pipeline speed and prevent flaky functional failures due to the overhead of the Lighthouse engine.
 
 ---
 
-## 5. CI/CD and Observability
+## 6. CI/CD and Observability
 
 **GitHub Actions:** `@smoke` on every PR (blocking), `@regression` triggered by a successful staging deployment, `@extended` pre-release or on-demand. Max 2 retries in CI only, to handle sandbox flakiness without masking real bugs.
 
@@ -90,9 +105,15 @@ DemoQA has no `data-testid` attributes. This suite uses user-facing locators onl
 
 **Rollback:** `@smoke` failures are hard-blocking. `@regression` and `@extended` failures are non-blocking but tracked. A persistent `@smoke` failure post-merge triggers a stop-the-line alert before the next deployment.
 
+**Parallelization:** Initial baseline set to workers - 4 for CI and 2 for local, (fullyParallel: true). This is a "Good Citizen" approach for public sandboxes (DemoQA/Booker) to avoid 429 rate-limiting while proving thread-safety.
+
+**Global Timeout:** Set to 300,000ms (5 minutes). This prevents "zombie" runs from hanging the pipeline and burning CI credits.
+
+**Dynamic Review:** These baselines are not "set and forget." They are reviewed against P95 execution data after every release cycle. If the suite consistently finishes in 3 minutes, the timeout is tightened to 4 to maintain a fast failure signal.
+
 ---
 
-## 6. Framework Governance
+## 7. Framework Governance
 
 A framework only one person understands is a liability.
 
@@ -109,7 +130,7 @@ A framework only one person understands is a liability.
 | Framework | Playwright + TypeScript |
 | API Library | Playwright `request` (Axios next) |
 | Architecture | POM + Service Objects |
-| Selectors | `getByRole` first, `data-testid` second |
+| Selectors | `getByRole` first; `#id` for DemoQA inputs (no linked labels or `aria-label` attributes present) |
 | Data Isolation | UUID-tagged + idempotent UI flows |
 | Test Independence | Every test runs in isolation, any order |
 | Schema Validation | JSON schema assertions on all API responses |
@@ -119,4 +140,7 @@ A framework only one person understands is a liability.
 | Retries | CI-only, max 2 |
 | Execution | `@smoke` per PR, `@regression` on staging deploy, `@extended` pre-release |
 | Browser Coverage | Chromium only (assessment scope); full browser matrix is a production concern |
+| Network | Live Integration (Mocking for edge cases only) |
+| Contract | JSON Schema matching (Pact for next step) |
+| Performance | Functional timings < 500ms (Lighthouse for synthetics) |
 | Governance | Fixtures + Standards + Docs |
