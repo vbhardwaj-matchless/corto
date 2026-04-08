@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
+import { test } from "../../../../fixtures/ui.fixtures";
 
 test.describe("Authentication Flow", () => {
   test("Invalid Login Credentials @regression", async ({ loginPage }) => {

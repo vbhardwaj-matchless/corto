@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
-import { assertResponseTime } from "../../../utils/response-timer";
+import { test } from "../../../../fixtures/ui.fixtures";
+import { assertResponseTime } from "../../../../utils/response-timer";
 
 test.describe("Book Store Browsing", () => {
   test("Browse Book Catalog @smoke", async ({ page }) => {

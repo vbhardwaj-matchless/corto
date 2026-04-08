@@ -19,6 +19,22 @@ This repo is a standalone QA mono-repo. For the reasoning behind framework choic
 | Regression| @regression | Staging deploy    | No       |
 | Extended  | @extended   | Pre-release/manual| No       |
 
+## AI Assistance (Task 1 & Task 2(PartA))
+GitHub Copilot Agent mode (Claude Sonnet) was used for comments, documentation and deep research of apps.Human(Varun for this assesment) in the loop review and approves/rejects every output of AI. 
+
+## Task 2 (PartB)
+ Playwright agents were installed to do this task including planning, generation and healing. 
+- specs/ — Test Plans
+- tests/api/booking/partb — Test files
+
+## Work in Progress
+- Review and annotate improvements for Task2 PartB. Add tags
+- Tune the number of workers on CI for stability to run tests
+- Stabilise the CI Jobs 
+- Commit rules
+- Fix flaky and slow tests
+- Add security controls
+
 ## Folder Structure
 - .github/ — CI workflows
 - specs/ — Markdown test plans 
@@ -32,14 +48,6 @@ This repo is a standalone QA mono-repo. For the reasoning behind framework choic
 - config/ — Environment config
 - specs/ — Test Plans
 - .husky/ — Pre-commit hooks
-
-## AI Assistance (Task 1 & Task 2(PartA))
-GitHub Copilot Agent mode (Claude Sonnet) was used for comments, documentation and deep research of apps.Human(Varun for this assesment) in the loop review and approves/rejects every output of AI. 
-
-## Task 2 (PartB)
- Playwright agents were installed to do this task including planning, generation and healing. 
-- specs/ — Test Plans
-- tests/api/taskB — spec.ts
 
 ## Contributing
 See [Contributing.md](./docs/Contributing.md).

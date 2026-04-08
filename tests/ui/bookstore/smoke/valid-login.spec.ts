@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
-import { ENV } from "../../../config/environments";
+import { test } from "../../../../fixtures/ui.fixtures";
+import { ENV } from "../../../../config/environments";
 
 test.describe("Authentication Flow", () => {
   // Global 60s timeout applies. CI retries (--retries=2) handle sandbox cold-start flakes.

@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/api.fixtures";
-import { assertResponseTime } from "../../../utils/response-timer";
-import { validateSchema } from "../../../utils/schema-validator";
-import bookingSchema from "../../../data/api/schemas/booking.schema.json";
-import { ENV } from "../../../config/environments";
+import { test } from "../../../../fixtures/api.fixtures";
+import { assertResponseTime } from "../../../../utils/response-timer";
+import { validateSchema } from "../../../../utils/schema-validator";
+import bookingSchema from "../../../../data/api/schemas/booking.schema.json";
+import { ENV } from "../../../../config/environments";
 
 test.use({ baseURL: ENV.api.baseUrl });
 

@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
-import { KNOWN_BOOKS } from "../../../data/ui/bookstore.data";
+import { test } from "../../../../fixtures/ui.fixtures";
+import { KNOWN_BOOKS } from "../../../../data/ui/bookstore.data";
 
 const { title: BOOK_TITLE } = KNOWN_BOOKS.gitPocketGuide;
 

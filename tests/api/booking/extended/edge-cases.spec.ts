@@ -1,11 +1,11 @@
 // spec: specs/restful-booker-api-test-plan.md
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/api.fixtures";
+import { test } from "../../../../fixtures/api.fixtures";
 import {
   createZeroPriceBookingPayload,
   createReversedDatesBookingPayload,
-} from "../../../data/api/booking.factory";
-import { ENV } from "../../../config/environments";
+} from "../../../../data/api/booking.factory";
+import { ENV } from "../../../../config/environments";
 
 test.use({ baseURL: ENV.api.baseUrl });
 

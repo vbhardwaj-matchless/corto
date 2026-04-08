@@ -83,7 +83,7 @@ test.describe("Create Booking — seed / reference", () => {
 
   // Reference test — demonstrates the full happy-path pattern.
   // The Planner Agent uses this as the baseline for generated tests.
-  test("Create booking with all fields @smoke", async ({ bookingService }) => {
+  test("Create booking with all fields", async ({ bookingService }) => {
     const payload = createBookingPayload();
 
     const start = Date.now();

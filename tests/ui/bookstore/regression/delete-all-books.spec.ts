@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
-import { ENV } from "../../../config/environments";
-import { ProfilePage } from "../../../pages/bookstore/ProfilePage";
+import { test } from "../../../../fixtures/ui.fixtures";
+import { ENV } from "../../../../config/environments";
+import { ProfilePage } from "../../../../pages/bookstore/ProfilePage";
 
 test.describe("Collection Management", () => {
   test("Delete All Books from Collection @regression", async ({

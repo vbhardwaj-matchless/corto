@@ -35,16 +35,29 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
       const response = await apiContext.post("/Account/v1/Login", {
         data: { userName: ENV.ui.username, password: ENV.ui.password },
       });
+      const responseText = await response.text();
       if (!response.ok())
         throw new Error(
-          `DemoQA login API failed: ${response.status()} ${await response.text()}`,
+          `DemoQA login API failed: ${response.status()} ${responseText}`,
         );
-      const { userId, token, username, expires } = (await response.json()) as {
+      if (!responseText || responseText.trim() === "")
+        throw new Error(
+          `DemoQA login API returned empty body (status ${response.status()})`,
+        );
+      let loginData: {
         userId: string;
         token: string;
         username: string;
         expires: string;
       };
+      try {
+        loginData = JSON.parse(responseText) as typeof loginData;
+      } catch {
+        throw new Error(
+          `DemoQA login API returned invalid JSON (status ${response.status()}): ${responseText.slice(0, 200)}`,
+        );
+      }
+      const { userId, token, username, expires } = loginData;
       await apiContext.dispose();
       if (!token || !userId || !username || !expires)
         throw new Error(

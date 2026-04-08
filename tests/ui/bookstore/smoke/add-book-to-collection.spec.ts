@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
-import { KNOWN_BOOKS } from "../../../data/ui/bookstore.data";
-import { ENV } from "../../../config/environments";
+import { test } from "../../../../fixtures/ui.fixtures";
+import { KNOWN_BOOKS } from "../../../../data/ui/bookstore.data";
+import { ENV } from "../../../../config/environments";
 
 const { title: BOOK_TITLE } = KNOWN_BOOKS.gitPocketGuide;
 

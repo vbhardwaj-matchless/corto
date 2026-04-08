@@ -10,8 +10,8 @@ on:
         options:
           - staging
           - production
-  deployment_status:
-    types: [success]
+  # deployment_status:
+  #   types: [success]
 jobs:
   regression:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
         with:
           name: regression-report
           path: playwright-report/
-      - name: Notify on Failure
-        if: failure()
-        run: |
-          curl -X POST -H "Content-Type: application/json" -d '{"text": "Regression tests failed."}' ${{ secrets.ALERT_WEBHOOK_URL }}
+      # - name: Notify on Failure
+      #   if: failure()
+      #   run: |
+      #     curl -X POST -H "Content-Type: application/json" -d '{"text": "Regression tests failed."}' ${{ secrets.ALERT_WEBHOOK_URL }}

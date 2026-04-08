@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { test } from "../../../fixtures/ui.fixtures";
-import { assertResponseTime } from "../../../utils/response-timer";
-import { ENV } from "../../../config/environments";
+import { test } from "../../../../fixtures/ui.fixtures";
+import { assertResponseTime } from "../../../../utils/response-timer";
+import { ENV } from "../../../../config/environments";
 
 test.describe("Collection Management", () => {
   test("Remove Single Book from Collection @regression", async ({
